@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a1624">
+  <meta name="description" content="反诈剧情模拟 · 网页版：以真实诈骗话术为蓝本的情景互动演练，自己判断、看见后果、完成复盘。">
+  <title>反诈剧情模拟 · 网页版</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a1624'/%3E%3Cpath d='M32 12l16 6v12c0 11-7 18-16 22-9-4-16-11-16-22V18z' fill='%234c9aff'/%3E%3Cpath d='M24 32l6 6 12-12' stroke='%230a1624' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ================= 顶栏 ================= -->
+  <header id="page-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">反诈剧情模拟</span>
+      <span class="brand-tag">网页版</span>
+    </div>
+    <div class="header-actions">
+      <button id="btn-sound" class="icon-btn" title="声音开关" aria-label="声音开关">🔊</button>
+      <button id="btn-fullscreen" class="icon-btn" title="全屏 / 退出全屏" aria-label="全屏切换">⛶</button>
+    </div>
+  </header>
+
+  <main id="stage">
+
+    <!-- ================= 首页 ================= -->
+    <section id="screen-home" class="screen is-active">
+      <div class="home-wrap">
+        <p class="eyebrow">情景互动 · 反诈演练</p>
+        <h1 class="home-title">反诈剧情模拟</h1>
+        <p class="home-sub">
+          以真实诈骗话术为蓝本。你以第一人称进入现场，<br class="br-pc">
+          做判断、看后果、完成复盘——把「先核实、再行动」变成习惯。
+        </p>
+        <div class="home-actions">
+          <button id="btn-start" class="btn btn-primary btn-lg">开始体验</button>
+          <button id="btn-continue" class="btn btn-ghost btn-lg" hidden>继续上次剧情</button>
+        </div>
+        <div id="home-stats" class="home-stats"></div>
+        <p class="home-note">进度保存在本机浏览器 · 刷新页面不丢失 · 无需安装</p>
+      </div>
+    </section>
+
+    <!-- ================= 案件库 ================= -->
+    <section id="screen-library" class="screen">
+      <div class="lib-head">
+        <div class="lib-title-wrap">
+          <h2 class="lib-title">案件库</h2>
+          <p class="lib-meta">
+            共 <b id="stat-cases">0</b> 个案件 ·
+            已通关 <b id="stat-cleared">0</b> ·
+            结局收集 <b id="stat-endings">0</b>
+          </p>
+        </div>
+        <div class="lib-actions">
+          <button id="btn-records" class="btn btn-ghost btn-sm">记录回看</button>
+          <button id="btn-back-home" class="btn btn-ghost btn-sm">返回首页</button>
+        </div>
+      </div>
+      <div id="case-grid" class="case-grid"></div>
+    </section>
+
+    <!-- ================= 剧情 ================= -->
+    <section id="screen-play" class="screen">
+      <div class="play-top">
+        <button id="btn-quit-play" class="btn btn-ghost btn-sm">← 退出</button>
+        <span id="play-case-title" class="play-case-title"></span>
+        <div class="risk-meter">
+          <span class="risk-label">风险指数</span>
+          <div class="risk-track"><div id="risk-fill" class="risk-fill"></div></div>
+          <span id="risk-value" class="risk-value">0</span>
+        </div>
+      </div>
+      <div class="play-body">
+        <div id="scene" class="scene"></div>
+      </div>
+    </section>
+
+    <!-- ================= 结局 ================= -->
+    <section id="screen-ending" class="screen">
+      <div class="ending-wrap">
+        <div id="ending-badge" class="ending-badge">安全</div>
+        <h2 id="ending-title" class="ending-title"></h2>
+        <p id="ending-desc" class="ending-desc"></p>
+
+        <div id="ending-stats" class="ending-stats"></div>
+
+        <div class="advice-box">
+          <h3 class="advice-title">行动建议</h3>
+          <ul id="ending-advice" class="advice-list"></ul>
+        </div>
+
+        <div class="ending-actions">
+          <button id="btn-ending-library" class="btn btn-primary">返回案件库</button>
+          <button id="btn-ending-retry" class="btn btn-ghost">重玩本案</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= 底栏 ================= -->
+  <footer id="page-footer">
+    <span>反诈剧情模拟 · 网页版</span>
+    <span class="dot"></span>
+    <span>仅供反诈宣传教育用途</span>
+    <span class="dot"></span>
+    <span>进度保存在本机浏览器</span>
+  </footer>
+
+  <!-- ================= 记录回看弹窗 ================= -->
+  <div id="modal-records" class="modal" hidden>
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h3>记录回看</h3>
+        <button id="btn-modal-close" class="icon-btn" title="关闭" aria-label="关闭">✕</button>
+      </div>
+      <div id="records-body" class="records-body"></div>
+      <div class="modal-foot">
+        <button id="btn-clear-records" class="btn btn-danger btn-sm">清除全部记录</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
